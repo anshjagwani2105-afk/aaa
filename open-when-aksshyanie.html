@@ -1,0 +1,203 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Open When — For Aksshyanie</title>
+  <style>
+    :root{
+      --bg: #0b1220; --card:#081026; --accent:#ff79c6; --muted:rgba(255,255,255,0.7);
+      --glass: rgba(255,255,255,0.03);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,#061428,#081126);color:#fff;min-height:100vh;padding:28px;display:flex;justify-content:center}
+    .wrap{width:100%;max-width:980px}
+    header{display:flex;gap:16px;align-items:center}
+    .logo{width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,#7c3aed,#06b6d4);display:flex;align-items:center;justify-content:center;font-weight:700;box-shadow:0 10px 30px rgba(12,10,40,0.6)}
+    h1{margin:0;font-size:22px}
+    p.lead{margin:6px 0 18px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:18px}
+    .card{background:var(--card);padding:16px;border-radius:12px;cursor:pointer;border:1px solid rgba(255,255,255,0.03);transition:transform .18s,box-shadow .18s}
+    .card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(2,6,23,0.6)}
+    .card .title{font-weight:700;margin-bottom:8px}
+    .card .hint{font-size:13px;color:var(--muted)}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    button.btn{background:var(--accent);border:none;padding:10px 14px;border-radius:10px;color:white;font-weight:700;cursor:pointer}
+    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:10px 12px;border-radius:10px;color:var(--muted);cursor:pointer}
+    .modal-bg{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:20px}
+    .modal-bg.show{display:flex}
+    .modal{width:100%;max-width:760px;background:linear-gradient(180deg,#071126,#07112b);border-radius:14px;padding:22px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 30px 80px rgba(2,6,23,0.7)}
+    .modal h2{margin:0 0 8px}
+    .meta{font-size:13px;color:var(--muted);margin-bottom:12px}
+    .content{background:var(--glass);padding:16px;border-radius:10px;color:#e6eef8;line-height:1.5;max-height:60vh;overflow:auto}
+    footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
+    .nick{color:var(--accent);font-weight:700}
+    @media (max-width:520px){.logo{width:52px;height:52px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">A♥</div>
+      <div>
+        <h1>For Aksshyanie</h1>
+        <p class="lead">Open when... — little notes from me to you. (Aksu, Smarty Pants, Ms. Beautifu — this one’s all love.)</p>
+      </div>
+    </header>
+
+    <div class="controls">
+      <button class="btn" id="downloadAll">Download HTML (single file)</button>
+      <button class="ghost" id="copyJSON">Copy messages JSON</button>
+      <button class="ghost" id="downloadZip">Download letters as .txt (zip)</button>
+    </div>
+
+    <div class="grid" id="cardsGrid"></div>
+
+    <footer>Made with so much dumb love — <span class="nick">Ansh</span> 💌</footer>
+
+    <div class="modal-bg" id="modalBg">
+      <div class="modal" role="dialog">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div>
+            <h2 id="modalTitle">Open letter</h2>
+            <div class="meta" id="modalMeta">From: Ansh • For: Aksshyanie</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="ghost" id="downloadThisBtn">Download .txt</button>
+            <button class="btn" id="closeBtn">Close</button>
+          </div>
+        </div>
+        <div class="content" id="modalContent"></div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+const messages = [
+  {
+    "title":"Cover — For Aksshyanie",
+    "hint":"Open to see why you’re my favorite",
+    "from":"Ansh",
+    "openDate":"anytime",
+    "body":"Hey <strong>Aksu</strong> — this is a tiny internet box of feelings just for you. Open the ones you need. Laugh at the dumb ones, cry at the soft ones, and keep the rest for later. You’re my <em>Smarty Pants</em>, my <em>Ms. Beautifu</em>, and the best part of my day. — <strong>Ansh</strong>"
+  },
+  {
+    "title":"Open when you miss me",
+    "hint":"When distance hits",
+    "from":"Ansh",
+    "openDate":"anytime",
+    "body":"I miss you too, <strong>Ms. Beautifu</strong>. Put on our song, close your eyes, and imagine we’re doing something stupid like stealing fries. I’m counting the minutes till I see you again. Text me one random thing and I’ll reply with a meme."
+  },
+  {
+    "title":"Open when you’re sad",
+    "hint":"Bad days happen",
+    "from":"Ansh",
+    "openDate":"anytime",
+    "body":"I hate that you’re hurting, <strong>Aksu</strong>. if you can, breathe in for 4, hold 4, out 6. You’re allowed to rest. You are soft, strong, and so loved — even on days it doesn’t feel like it. Wanna voice call? I’ll be there, no pressure."
+  },
+  {
+    "title":"Open when you need a laugh",
+    "hint":"Cheesy jokes inside",
+    "from":"Ansh",
+    "openDate":"anytime",
+    "body":"Okay Smarty Pants, here’s a classic: Why don’t scientists trust atoms? Because they make up everything. 😂 Also, remember that time you tripped but turned it into a dance move? Peak talent."
+  },
+  {
+    "title":"Open when it’s your birthday",
+    "hint":"Birthday energy",
+    "from":"Ansh",
+    "openDate":"your birthday",
+    "body":"HAPPY BIRTHDAY, <strong>Ms. Beautifu</strong>!! Imagine confetti, cake, and me being extra dramatic while singing off-key. Make a wish and save one for us. Tonight, the world is your playlist."
+  },
+  {
+    "title":"Open when you need motivation",
+    "hint":"You got this",
+    "from":"Ansh",
+    "openDate":"anytime",
+    "body":"Aksu — you are more capable than you think. Break the mountain into tiny rocks: one task at a time. I believe in you, and I’m annoying enough to remind you every hour if needed. Go flex on the day."
+  },
+  {
+    "title":"Open when you can’t sleep",
+    "hint":"Late-night comfort",
+    "from":"Ansh",
+    "openDate":"anytime",
+    "body":"If you’re lying awake, picture us on a stupid couch, sharing fries, your head on my shoulder. Count backwards from 100 if you want. If nothing helps, whisper me a random sentence and I’ll send the silliest reply possible."
+  },
+  {
+    "title":"Open when you need a hug",
+    "hint":"Virtual hug (IRL pending)",
+    "from":"Ansh",
+    "openDate":"anytime",
+    "body":"Big virtual hug incoming 🤗 — imagine two arms, warm blanket, and zero judgement. Ms. Beautifu, you deserve softness. I’ll give you the real hug soon, promise."
+  },
+  {
+    "title":"Open when you’re proud of yourself",
+    "hint":"Celebrate wins",
+    "from":"Ansh",
+    "openDate":"anytime",
+    "body":"Yesss queen, that’s goal behavior. Stand tall, do a tiny victory dance, and tell me all about it. I’m your biggest fan, Aksu. Rewards pending: a ridiculous treat and exaggerated praise."
+  },
+  {
+    "title":"Open when you want to smile",
+    "hint":"Random happy things",
+    "from":"Ansh",
+    "openDate":"anytime",
+    "body":"You’re reading this, which already makes me smile. Quick memory: the first time you laughed at my weird joke and I almost choked on my drink. Keep smiling, Smarty Pants — it looks unfairly good on you."
+  }
+];
+
+function renderCards(){
+  const grid = document.getElementById('cardsGrid');
+  grid.innerHTML = '';
+  messages.forEach((m,i) => {
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.innerHTML = `<div class="title">${m.title}</div><div class="hint">${m.hint||''}</div>`;
+    el.onclick = () => openModal(i);
+    grid.appendChild(el);
+  });
+}
+
+function openModal(i){
+  const m = messages[i];
+  document.getElementById('modalTitle').textContent = m.title;
+  document.getElementById('modalMeta').textContent = `From: ${m.from} • For: Aksshyanie • Open: ${m.openDate}`;
+  document.getElementById('modalContent').innerHTML = m.body;
+  document.getElementById('modalBg').classList.add('show');
+  document.getElementById('downloadThisBtn').onclick = () => downloadTextFile(slugify(m.title)+'.txt', stripTags(m.body));
+}
+
+function slugify(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')}
+function stripTags(html){return html.replace(/<[^>]*>?/gm, '')}
+
+function downloadTextFile(name, text){
+  const blob = new Blob([text], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+
+document.getElementById('closeBtn').onclick = ()=>document.getElementById('modalBg').classList.remove('show');
+document.getElementById('downloadAll').onclick = ()=> {
+  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'open-when-aksshyanie.html'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+};
+document.getElementById('copyJSON').onclick = ()=> {
+  navigator.clipboard.writeText(JSON.stringify(messages, null, 2)).then(()=>alert('Messages JSON copied to clipboard'));
+};
+// create zip of txt files (lightweight) - using JS only
+document.getElementById('downloadZip').onclick = async ()=>{
+  const files = messages.map(m => ({name: slugify(m.title)+'.txt', text: stripTags(m.body)}));
+  // basic zip using JS (no libs) - create a simple blob by concatenating with separators
+  const combined = files.map(f => `--- ${f.name} ---\n${f.text}\n\n`).join('');
+  const blob = new Blob([combined], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'open-when-aksshyanie-letters.txt'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+};
+
+renderCards();
+</script>
+</body>
+</html>
